@@ -5,12 +5,14 @@ const timezone = document.getElementById('time-zone');
 const countryEl = document.getElementById('country');
 const weatherForecastEl = document.getElementById('weather-forecast');
 const currentTempEl = document.getElementById('current-temp');
+const container = document.querySelector('.container');
 
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const API_KEY = '49cc8c821cd2aff9af04c9f98c36eb74';
+const API_KEY = '756de4f62004b8ced4d57a8c51b18a65';
+
 
 setInterval(() => {
     const time = new Date();
@@ -28,6 +30,7 @@ setInterval(() => {
 
 }, 1000);
 
+console.log(navigator.geolocation.getCurrentPosition)
 getWeatherData()
 function getWeatherData() {
     navigator.geolocation.getCurrentPosition((success) => {
@@ -45,6 +48,7 @@ function getWeatherData() {
 
 function showWeatherData(data) {
     let { humidity, pressure, sunrise, sunset, wind_speed } = data.current;
+
 
     timezone.innerHTML = data.timezone;
     countryEl.innerHTML = data.lat + 'N ' + data.lon + 'E'
@@ -84,21 +88,19 @@ function showWeatherData(data) {
                 <div class="temp">Night - ${day.temp.night}&#176;C</div>
                 <div class="temp">Day - ${day.temp.day}&#176;C</div>
             </div>
-            
             `
         } else {
-            otherDayForcast += `
-            <div class="weather-forecast-item">
-                <div class="day">${window.moment(day.dt * 1000).format('ddd')}</div>
+
+            const otherDEl = document.createElement('div');
+            otherDEl.classList.add('weather-forecast-item');
+            otherDEl.innerHTML= `
+                <div class="day">${window.moment(day.dt*1000).format('ddd')}</div>
                 <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="weather icon" class="w-icon">
                 <div class="temp">Night - ${day.temp.night}&#176;C</div>
                 <div class="temp">Day - ${day.temp.day}&#176;C</div>
-            </div>
-            
             `
+            weatherForecastEl.appendChild(otherDEl);
         }
     })
-
-
-    weatherForecastEl.innerHTML = otherDayForcast;
+   
 }
